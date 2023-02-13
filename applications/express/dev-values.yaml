@@ -54,3 +54,30 @@ express:
     destination:
       host: express-service
       port: 3000
+  # Peer Authentication
+  peerAuthentication:
+    enabled: true
+    name: express-peer-authentication
+    app: express
+    namespace: express
+    mtls:
+      mode: STRICT
+  # Authorization Policy
+  authorizationPolicy:
+    enabled: false
+    name: express-authorization-policy
+    namespace: express
+    app: express
+    rules:
+      - from:
+          - source:
+              namespaces:
+                - python
+        to:
+          - operation:
+              methods:
+                - GET
+                - POST
+  # Service Entry
+  serviceEntry:
+    enabled: false

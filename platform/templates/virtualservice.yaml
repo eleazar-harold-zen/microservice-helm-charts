@@ -8,7 +8,9 @@ spec:
   hosts:
   - "*"
   gateways:
-  - asm-ingress/asm-ingress-gateway
+  # defaulted to asm-ingress/asm-ingress-gateway for demo purposes
+  # otherwise, use the gateway name you created or default org gateway
+  - {{ default "asm-ingress/asm-ingress-gateway" .Values.virtualService.gateway }}
   http:
   - match:
     - uri:

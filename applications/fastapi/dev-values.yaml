@@ -54,3 +54,29 @@ fastapi:
     destination:
       host: fastapi-service
       port: 8000
+  # Peer Authentication
+  peerAuthentication:
+    enabled: true
+    name: fastapi-peer-authentication
+    namespace: python
+    app: fastapi
+    mtls:
+      mode: STRICT
+  # Authorization Policy
+  authorizationPolicy:
+    enabled: false
+    name: fastapi-authorization-policy
+    namespace: python
+    app: fastapi
+    rules:
+      - from:
+          - source:
+              namespaces:
+                - express
+        to:
+          - operation:
+              methods:
+                - GET
+  # Service Entry
+  serviceEntry:
+    enabled: false
