@@ -1,0 +1,56 @@
+global:
+  chartName: fastapi
+fastapi:
+  # Deployment object
+  deployment:
+    enabled: false
+  # Updated (New) Deployment resource
+  newDeployment:
+    enabled: true
+    name: fastapi
+    namespace: python
+    replicas: 1
+    appName: fastapi
+    role: api
+    containerName: fastapi-container
+    imageRepository: eleazarharold/fastapi-python
+    imageTag: "v4"
+    port: 8000
+  # Horizontal Pod Autoscaler
+  hpa:
+    enabled: false
+  # Service Account object
+  serviceAccount:
+    enabled: true
+    name: fastapi-service-account
+    namespace: python
+  # Stable Service object
+  service:
+    enabled: true
+    name: fastapi-service
+    namespace: python
+    appName: fastapi
+    type: ClusterIP
+    servicePort: 8000
+    targetPort: 8000
+  # Canary Service object (for Argo Rollouts)
+  canaryService:
+    enabled: false
+  # Namespace object
+  namespace:
+    enabled: true
+    name: python
+  # Ingress
+  ingress:
+    enabled: false
+  # Canary Rollout # Canary Service object (for Argo Rollouts)
+  canaryRollout:
+    enabled: false
+  # Virtual Service
+  virtualService:
+    enabled: true
+    name: fastapi-virtual-service
+    namespace: python
+    destination:
+      host: fastapi-service
+      port: 8000

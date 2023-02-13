@@ -1,0 +1,64 @@
+{{- if .Values.authorizationPolicy.enabled }}
+# AuthorizationPolicy template
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}-authorization-policy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+    selector:
+        matchLabels:
+        app: {{ .Release.Name }}
+    action: {{ .Values.authorizationPolicy.action }}
+    rules:
+        {{- range .Values.authorizationPolicy.rules }}
+        - from:
+            {{- range .from }}
+            - source:
+                {{- range .principals }}
+                principals:
+                - {{ . }}
+                {{- end }}
+                {{- range .namespaces }}
+                namespaces:
+                - {{ . }}
+                {{- end }}
+                {{- range .ipBlocks }}
+                ipBlocks:
+                - {{ . }}
+                {{- end }}
+            {{- end }}
+        {{- range .to }}
+        to:
+            - operation:
+                {{- range .methods }}
+                methods:
+                - {{ . }}
+                {{- end }}
+                {{- range .paths }}
+                paths:
+                - {{ . }}
+                {{- end }}
+                {{- range .hosts }}
+                hosts:
+                - {{ . }}
+                {{- end }}
+                {{- range .ports }}
+                ports:
+                - {{ . }}
+                {{- end }}
+        {{- end }}
+        {{- range .when }}
+        when:
+            {{- range .key }}
+            - key: {{ . }}
+            {{- range .values }}
+            values:
+                - {{ . }}
+            {{- end }}
+            {{- end }}
+        {{- end }}
+        {{- end }}
+{{- end }}

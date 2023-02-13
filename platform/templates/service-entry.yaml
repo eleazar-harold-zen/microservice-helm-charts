@@ -1,0 +1,23 @@
+{{- if .Values.serviceEntry.enabled }}
+# ServiceEntry template for {{ .Values.serviceEntry.name }}
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: {{ .Values.serviceEntry.name }}
+  namespace: {{ .Values.serviceEntry.namespace }}
+spec:
+    hosts:
+    - {{ .Values.serviceEntry.host }}
+    # default location to MESH_INTERNAL if not specified
+    location: {{ default "MESH_INTERNAL" .Values.serviceEntry.location }}
+    ports:
+    - name: http
+        number: {{ .Values.serviceEntry.port }}
+        protocol: HTTP
+    resolution: DNS
+    endpoints:
+    - address: {{ .Values.serviceEntry.address }}
+      ports:
+        http: {{ .Values.serviceEntry.port }}
+
+{{- end }}

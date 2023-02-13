@@ -1,0 +1,16 @@
+---
+apiVersion: v2
+description: The express microservice helm chart
+keywords:
+  - express
+maintainers:
+  - name: eleazar yewa harold
+    email: eleazar.yewa@zenbusiness.com
+name: express
+appVersion: "0.1.0"
+version: 0.1.0
+dependencies:
+  - name: platform
+    repository: file://../../platform
+    version: 0.1.0
+    alias: express

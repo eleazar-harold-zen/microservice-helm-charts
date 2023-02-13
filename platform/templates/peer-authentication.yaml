@@ -1,0 +1,22 @@
+{{- if .Values.peerAuthentication.enabled }}
+# Peer Authentication template
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: {{ .Values.peerAuthentication.name }}
+  namespace: {{ .Values.peerAuthentication.namespace }}
+spec:
+    selector:
+        matchLabels:
+        {{ with .Values.peerAuthentication.app }}
+            app: {{ . }}
+        {{- end }}
+        {{ with .Values.peerAuthentication.workload }}
+            workload: {{ . }}
+        {{- end }}
+    mtls:
+        # default mode is PERMISSIVE (allow both mTLS and plain text traffic)
+        # set default mode to STRICT if you want to enforce mTLS for all services
+        # for the mode to take effect, you need to restart all pods in the mesh
+        mode: {{ default "PERMISSIVE" .Values.peerAuthentication.mode }}
+{{- end }}

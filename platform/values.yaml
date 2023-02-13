@@ -16,3 +16,4 @@ service:
   type: "UPDATE"
   servicePort: 0
   targetPort: 0
+
