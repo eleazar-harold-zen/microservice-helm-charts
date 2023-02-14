@@ -14,7 +14,7 @@ fastapi:
     role: api
     containerName: fastapi-container
     imageRepository: eleazarharold/fastapi-python
-    imageTag: "v4"
+    imageTag: "v5"
     port: 8000
   # Horizontal Pod Autoscaler
   hpa:
