@@ -21,10 +21,10 @@ spec:
         image: "{{ .Values.deployment.imageRepository }}:{{ .Values.deployment.imageTag }}"
         resources:
           limits:
-            cpu: 2000m
-            memory: 512Mi
+            cpu: 200m
+            memory: 256Mi
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 64Mi
         ports:
         - containerPort: {{ .Values.deployment.port }}
