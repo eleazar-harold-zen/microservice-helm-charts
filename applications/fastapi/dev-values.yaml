@@ -24,6 +24,8 @@ fastapi:
     enabled: true
     name: fastapi-service-account
     namespace: python
+    annotations:
+      iam.gke.io/gcp-service-account: eleazar-harold@zen-accelerators.iam.gserviceaccount.com
   # Stable Service object
   service:
     enabled: true
@@ -64,19 +66,18 @@ fastapi:
       mode: STRICT
   # Authorization Policy
   authorizationPolicy:
-    enabled: false
+    enabled: true
     name: fastapi-authorization-policy
     namespace: python
     app: fastapi
+    action: ALLOW  # ALLOW or DENY (default)
     rules:
       - from:
-          - source:
-              namespaces:
-                - express
-        to:
-          - operation:
-              methods:
-                - GET
+          - namespaces:
+              - express
+      - to:
+          - methods:
+              - GET
   # Service Entry
   serviceEntry:
     enabled: false

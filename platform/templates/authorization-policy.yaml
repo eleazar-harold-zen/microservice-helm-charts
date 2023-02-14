@@ -3,62 +3,53 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ .Release.Name }}-authorization-policy
-  namespace: {{ .Release.Namespace }}
+  name: {{ .Values.authorizationPolicy.name }}-authorization-policy
+  namespace: {{ .Values.authorizationPolicy.namespace }}
   labels:
-    app: {{ .Release.Name }}
+    app: {{ .Values.authorizationPolicy.app }}
 spec:
     selector:
         matchLabels:
-        app: {{ .Release.Name }}
+        app: {{ .Values.authorizationPolicy.app }}
     action: {{ .Values.authorizationPolicy.action }}
     rules:
-        {{- range .Values.authorizationPolicy.rules }}
-        - from:
-            {{- range .from }}
-            - source:
-                {{- range .principals }}
-                principals:
-                - {{ . }}
-                {{- end }}
-                {{- range .namespaces }}
-                namespaces:
-                - {{ . }}
-                {{- end }}
-                {{- range .ipBlocks }}
-                ipBlocks:
-                - {{ . }}
-                {{- end }}
+    {{- range .Values.authorizationPolicy.rules }}
+    - from:
+        {{- range .from }}
+        - source:
+            {{- range .principals }}
+            principals:
+            - {{ . }}
             {{- end }}
+            {{- range .namespaces }}
+            namespaces:
+            - {{ . }}
+            {{- end }}
+            {{- range .ipBlocks }}
+            ipBlocks:
+            - {{ . }}
+            {{- end }}
+        {{- end }}
         {{- range .to }}
-        to:
-            - operation:
-                {{- range .methods }}
-                methods:
-                - {{ . }}
-                {{- end }}
-                {{- range .paths }}
-                paths:
-                - {{ . }}
-                {{- end }}
-                {{- range .hosts }}
-                hosts:
-                - {{ . }}
-                {{- end }}
-                {{- range .ports }}
-                ports:
-                - {{ . }}
-                {{- end }}
+        - operation:
+            methods:
+            {{- range .methods }}
+            - {{ . }}
+            {{- end }}
+            paths:
+            {{- range .paths }}
+            - {{ . }}
+            {{- end }}
         {{- end }}
         {{- range .when }}
-        when:
+        - when:
             {{- range .key }}
-            - key: {{ . }}
+            key: {{ . }}
+            {{- end }}
             {{- range .values }}
             values:
-                - {{ . }}
-            {{- end }}
+            - {{ . }}
             {{- end }}
         {{- end }}
-        {{- end }}
+    {{- end }}
 {{- end }}
