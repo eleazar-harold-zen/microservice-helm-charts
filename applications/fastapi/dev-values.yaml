@@ -64,19 +64,20 @@ fastapi:
       mode: STRICT
   # Authorization Policy
   authorizationPolicy:
-    enabled: false
+  # get authorization policy attributes from platform/istio/authorization-policy.yaml
+    enabled: true
     name: fastapi-authorization-policy
     namespace: python
     app: fastapi
+    action: ALLOW
     rules:
       - from:
-          - source:
-              namespaces:
-                - express
+          - namespaces:
+              - express
         to:
-          - operation:
-              methods:
-                - GET
+          - methods:
+              - GET
+              - POST
   # Service Entry
   serviceEntry:
     enabled: false

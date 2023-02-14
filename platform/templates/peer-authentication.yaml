@@ -9,14 +9,12 @@ spec:
     selector:
         matchLabels:
         {{ with .Values.peerAuthentication.app }}
-            app: {{ . }}
+        app: {{ .  }}
         {{- end }}
         {{ with .Values.peerAuthentication.workload }}
-            workload: {{ . }}
+        workload: {{ . }}
         {{- end }}
     mtls:
-        # default mode is PERMISSIVE (allow both mTLS and plain text traffic)
-        # set default mode to STRICT if you want to enforce mTLS for all services
-        # for the mode to take effect, you need to restart all pods in the mesh
-        mode: {{ default "PERMISSIVE" .Values.peerAuthentication.mode }}
+        # https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS-Mode
+        mode: {{ default "PERMISSIVE" .Values.peerAuthentication.mode }} # STRICT, PERMISSIVE, DISABLE
 {{- end }}
