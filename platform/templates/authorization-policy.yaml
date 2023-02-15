@@ -3,7 +3,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ .Values.authorizationPolicy.name }}-authorization-policy
+  name: {{ .Values.authorizationPolicy.name }}-ap
   namespace: {{ .Values.authorizationPolicy.namespace }}
   labels:
     app: {{ .Values.authorizationPolicy.app }}

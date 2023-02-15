@@ -3,7 +3,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: {{ .Values.peerAuthentication.name }}
+  name: {{ .Values.peerAuthentication.name }}-pa
   namespace: {{ .Values.peerAuthentication.namespace }}
 spec:
     selector:

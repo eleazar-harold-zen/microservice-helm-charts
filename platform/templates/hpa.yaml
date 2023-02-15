@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Values.hpa.name }}
+  name: {{ .Values.hpa.name }}-hpa
   namespace: {{ .Values.hpa.namespace }}
 spec:
   maxReplicas: 4

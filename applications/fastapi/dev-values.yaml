@@ -22,12 +22,12 @@ fastapi:
   # Service Account object
   serviceAccount:
     enabled: true
-    name: fastapi-service-account
+    name: fastapi
     namespace: python
   # Stable Service object
   service:
     enabled: true
-    name: fastapi-service
+    name: fastapi
     namespace: python
     appName: fastapi
     type: ClusterIP
@@ -49,7 +49,7 @@ fastapi:
   # Virtual Service
   virtualService:
     enabled: true
-    name: fastapi-virtual-service
+    name: fastapi
     namespace: python
     destination:
       host: fastapi-service
@@ -57,7 +57,7 @@ fastapi:
   # Peer Authentication
   peerAuthentication:
     enabled: true
-    name: fastapi-peer-authentication
+    name: fastapi
     namespace: python
     app: fastapi
     mtls:
@@ -81,3 +81,35 @@ fastapi:
   # Service Entry
   serviceEntry:
     enabled: false
+  # Envoy Filter
+  envoyFilter:
+    enabled: true
+    name: fastapi
+    namespace: python
+    workloadSelector:
+      labels:
+        app: fastapi
+    configPatches:
+    - applyTo: "HTTP_FILTER"
+      match:
+        context: "SIDECAR_INBOUND"
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: "INSERT_BEFORE"
+        value:
+          name: "envoy.lua"
+          typed_config: |
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
+              end
+              function envoy_on_response(response_handle)
+                response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
+                response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
+              end

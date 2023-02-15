@@ -65,7 +65,7 @@ express:
   # Authorization Policy
   authorizationPolicy:
     enabled: false
-    name: express-authorization-policy
+    name: express
     namespace: express
     app: express
     rules:
@@ -81,3 +81,35 @@ express:
   # Service Entry
   serviceEntry:
     enabled: false
+  # Envoy Filter
+  envoyFilter:
+    enabled: true
+    name: express
+    namespace: express
+    workloadSelector:
+      labels:
+        app: express
+    configPatches:
+    - applyTo: "HTTP_FILTER"
+      match:
+        context: "SIDECAR_INBOUND"
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: "INSERT_BEFORE"
+        value:
+          name: "envoy.lua"
+          typed_config: |
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
+              end
+              function envoy_on_response(response_handle)
+                response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
+                response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
+              end
