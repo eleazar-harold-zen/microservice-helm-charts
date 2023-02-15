@@ -1,0 +1,35 @@
+{{- if .Values.envoyFilter.enabled }}
+# EnvoyFilter template
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ .Values.envoyFilter.name }}-envoyfilter
+  namespace: {{ .Values.envoyFilter.namespace }}
+spec:
+{{- if .Values.envoyFilter.workloadSelector }}
+  workloadSelector:
+{{ toYaml .Values.envoyFilter.workloadSelector | indent 4 }}
+{{- end }}
+  configPatches:
+{{- range .Values.envoyFilter.configPatches }}
+  - applyTo: {{ .applyTo }}
+    match:
+      context: {{ .match.context }}
+      listener:
+        filterChain:
+          filter:
+            name: {{ .match.listener.filterChain.filter.name }}
+            subFilter:
+              name: {{ .match.listener.filterChain.filter.subFilter.name }}
+    patch:
+      operation: {{ .patch.operation }}
+      value:
+        {{- if .patch.value.name }}
+        name: {{ .patch.value.name }}
+        {{- end }}
+        {{- if .patch.value.typed_config }}
+        typed_config:
+          {{ .patch.value.typed_config | nindent 10 }}
+        {{- end }}
+{{- end }}
+{{- end }}

@@ -14,42 +14,145 @@ spec:
     action: {{ .Values.authorizationPolicy.action }}
     rules:
     {{- range .Values.authorizationPolicy.rules }}
+    {{- if .from}}
     - from:
         {{- range .from }}
         - source:
-            {{- range .principals }}
+            {{- if .principals }}
             principals:
+            {{- range .principals }}
             - {{ . }}
             {{- end }}
-            {{- range .namespaces }}
+            {{- end }}
+            {{- if .notPrincipals }}
+            notPrincipals:
+            {{- range .notPrincipals }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .namespaces }}
             namespaces:
+            {{- range .namespaces }}
             - {{ . }}
             {{- end }}
-            {{- range .ipBlocks }}
-            ipBlocks:
+            {{- end }}
+            {{- if .notNamespaces }}
+            notNamespaces:
+            {{- range .notNamespaces }}
             - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .ipBlocks }}
+            ipBlocks:
+            {{- range .ipBlocks }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notIpBlocks }}
+            notIpBlocks:
+            {{- range .notIpBlocks }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .requestPrincipals }}
+            requestPrincipals:
+            {{- range .requestPrincipals }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notRequestPrincipals }}
+            notRequestPrincipals:
+            {{- range .notRequestPrincipals }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .remoteIpBlocks }}
+            remoteIpBlocks:
+            {{- range .remoteIpBlocks }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notRemoteIpBlocks }}
+            notRemoteIpBlocks:
+            {{- range .notRemoteIpBlocks }}
+            - {{ . }}
+            {{- end }}
             {{- end }}
         {{- end }}
-        {{- range .to }}
+    {{- end }}
+    {{- if .to}}
+      to:
+      {{- range .to }}
         - operation:
+            {{- if .methods }}
             methods:
             {{- range .methods }}
             - {{ . }}
             {{- end }}
+            {{- end }}
+            {{- if .paths }}
             paths:
             {{- range .paths }}
             - {{ . }}
             {{- end }}
+            {{- end }}
+            {{- if .hosts }}
+            hosts:
+            {{- range .hosts }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .ports }}
+            ports:
+            {{- range .ports }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notMethods }}
+            notMethods:
+            {{- range .notMethods }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notPaths }}
+            notPaths:
+            {{- range .notPaths }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notHosts }}
+            notHosts:
+            {{- range .notHosts }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notPorts }}
+            notPorts:
+            {{- range .notPorts }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
         {{- end }}
+    {{- end }}
+    {{- if .when }}
         {{- range .when }}
         - when:
             {{- range .key }}
             key: {{ . }}
             {{- end }}
-            {{- range .values }}
+            {{- if .values }}
             values:
+            {{- range .values }}
             - {{ . }}
             {{- end }}
+            {{- end }}
+            {{- if .notValues }}
+            notValues:
+            {{- range .notValues }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
         {{- end }}
+    {{- end }}
     {{- end }}
 {{- end }}

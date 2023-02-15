@@ -19,5 +19,4 @@ spec:
     - address: {{ .Values.serviceEntry.address }}
       ports:
         http: {{ .Values.serviceEntry.port }}
-
 {{- end }}
