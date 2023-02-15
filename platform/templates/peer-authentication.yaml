@@ -8,11 +8,11 @@ metadata:
 spec:
     selector:
         matchLabels:
-        {{ with .Values.peerAuthentication.app }}
-        app: {{ .  }}
+        {{- if .Values.peerAuthentication.app }}
+          app: {{ .Values.peerAuthentication.app  }}
         {{- end }}
-        {{ with .Values.peerAuthentication.workload }}
-        workload: {{ . }}
+        {{- if .Values.peerAuthentication.workload }}
+          workload: {{ .Values.peerAuthentication.workload }}
         {{- end }}
     mtls:
         # https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS-Mode

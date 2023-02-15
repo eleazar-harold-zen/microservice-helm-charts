@@ -14,64 +14,145 @@ spec:
     action: {{ .Values.authorizationPolicy.action }}
     rules:
     {{- range .Values.authorizationPolicy.rules }}
+    {{- if .from}}
     - from:
         {{- range .from }}
         - source:
-            {{ with .principals }}
-            methods:
-            {{- range . }}
+            {{- if .principals }}
+            principals:
+            {{- range .principals }}
             - {{ . }}
             {{- end }}
             {{- end }}
-            {{ with .notPrincipals }}
+            {{- if .notPrincipals }}
             notPrincipals:
-            {{- range . }}
+            {{- range .notPrincipals }}
             - {{ . }}
             {{- end }}
             {{- end }}
-            {{ with .namespaces }}
+            {{- if .namespaces }}
             namespaces:
-            {{- range . }}
+            {{- range .namespaces }}
             - {{ . }}
             {{- end }}
             {{- end }}
-            {{ with .ipBlocks }}
+            {{- if .notNamespaces }}
+            notNamespaces:
+            {{- range .notNamespaces }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .ipBlocks }}
             ipBlocks:
-            {{- range . }}
+            {{- range .ipBlocks }}
             - {{ . }}
             {{- end }}
             {{- end }}
-            {{ with .notIpBlocks }}
+            {{- if .notIpBlocks }}
             notIpBlocks:
-            {{- range . }}
+            {{- range .notIpBlocks }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .requestPrincipals }}
+            requestPrincipals:
+            {{- range .requestPrincipals }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notRequestPrincipals }}
+            notRequestPrincipals:
+            {{- range .notRequestPrincipals }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .remoteIpBlocks }}
+            remoteIpBlocks:
+            {{- range .remoteIpBlocks }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notRemoteIpBlocks }}
+            notRemoteIpBlocks:
+            {{- range .notRemoteIpBlocks }}
             - {{ . }}
             {{- end }}
             {{- end }}
         {{- end }}
-        {{- range .to }}
+    {{- end }}
+    {{- if .to}}
+      to:
+      {{- range .to }}
         - operation:
-            {{ with .methods }}
+            {{- if .methods }}
             methods:
-            {{- range . }}
+            {{- range .methods }}
             - {{ . }}
             {{- end }}
             {{- end }}
-            {{ with .paths }}
+            {{- if .paths }}
             paths:
-            {{- range . }}
+            {{- range .paths }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .hosts }}
+            hosts:
+            {{- range .hosts }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .ports }}
+            ports:
+            {{- range .ports }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notMethods }}
+            notMethods:
+            {{- range .notMethods }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notPaths }}
+            notPaths:
+            {{- range .notPaths }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notHosts }}
+            notHosts:
+            {{- range .notHosts }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
+            {{- if .notPorts }}
+            notPorts:
+            {{- range .notPorts }}
             - {{ . }}
             {{- end }}
             {{- end }}
         {{- end }}
+    {{- end }}
+    {{- if .when }}
         {{- range .when }}
         - when:
             {{- range .key }}
             key: {{ . }}
             {{- end }}
-            {{- range .values }}
+            {{- if .values }}
             values:
+            {{- range .values }}
             - {{ . }}
             {{- end }}
+            {{- end }}
+            {{- if .notValues }}
+            notValues:
+            {{- range .notValues }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
         {{- end }}
+    {{- end }}
     {{- end }}
 {{- end }}
