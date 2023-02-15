@@ -22,14 +22,14 @@ fastapi:
   # Service Account object
   serviceAccount:
     enabled: true
-    name: fastapi-service-account
+    name: fastapi
     namespace: python
     annotations:
       iam.gke.io/gcp-service-account: eleazar-harold@zen-accelerators.iam.gserviceaccount.com
   # Stable Service object
   service:
     enabled: true
-    name: fastapi-service
+    name: fastapi
     namespace: python
     appName: fastapi
     type: ClusterIP
@@ -51,7 +51,7 @@ fastapi:
   # Virtual Service
   virtualService:
     enabled: true
-    name: fastapi-virtual-service
+    name: fastapi
     namespace: python
     destination:
       host: fastapi-service
@@ -59,7 +59,7 @@ fastapi:
   # Peer Authentication
   peerAuthentication:
     enabled: true
-    name: fastapi-peer-authentication
+    name: fastapi
     namespace: python
     app: fastapi
     mtls:
@@ -67,7 +67,7 @@ fastapi:
   # Authorization Policy
   authorizationPolicy:
     enabled: true
-    name: fastapi-authorization-policy
+    name: fastapi
     namespace: python
     app: fastapi
     action: ALLOW  # ALLOW or DENY (default)

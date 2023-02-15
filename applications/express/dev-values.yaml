@@ -22,7 +22,7 @@ express:
   # Service object
   service:
     enabled: true
-    name: express-service
+    name: express
     namespace: express
     appName: express
     type: LoadBalancer
@@ -31,7 +31,7 @@ express:
   # Service Account object
   serviceAccount:
     enabled: true
-    name: express-service-account
+    name: express
     namespace: express
   # Namespace object
   namespace:
@@ -49,7 +49,7 @@ express:
   # Virtual Service
   virtualService:
     enabled: true
-    name: express-virtual-service
+    name: express
     namespace: express
     destination:
       host: express-service
@@ -57,7 +57,7 @@ express:
   # Peer Authentication
   peerAuthentication:
     enabled: true
-    name: express-peer-authentication
+    name: express
     app: express
     namespace: express
     mtls:
@@ -65,7 +65,7 @@ express:
   # Authorization Policy
   authorizationPolicy:
     enabled: false
-    name: express-authorization-policy
+    name: express
     namespace: express
     app: express
     rules:
