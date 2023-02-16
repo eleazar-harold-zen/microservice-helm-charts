@@ -1,0 +1,15 @@
+{{- if .Values.requestAuthentication.enabled }}
+# RequestAuthentication template
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: {{ .Values.requestAuthentication.name }}
+  namespace: {{ .Values.requestAuthentication.namespace }}
+spec:
+    selector:
+        matchLabels:
+        app: {{ .Values.requestAuthentication.name }}
+    jwtRules:
+        - issuer: {{ .Values.requestAuthentication.issuer }}
+        jwksUri: {{ .Values.requestAuthentication.jwksUri }}
+{{- end }}
