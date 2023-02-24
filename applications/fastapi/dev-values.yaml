@@ -24,8 +24,6 @@ fastapi:
     enabled: true
     name: fastapi
     namespace: python
-    annotations:
-      iam.gke.io/gcp-service-account: eleazar-harold@zen-accelerators.iam.gserviceaccount.com
   # Stable Service object
   service:
     enabled: true
@@ -66,18 +64,20 @@ fastapi:
       mode: STRICT
   # Authorization Policy
   authorizationPolicy:
+  # get authorization policy attributes from platform/istio/authorization-policy.yaml
     enabled: true
-    name: fastapi
+    name: fastapi-authorization-policy
     namespace: python
     app: fastapi
-    action: ALLOW  # ALLOW or DENY (default)
+    action: ALLOW
     rules:
       - from:
           - namespaces:
               - express
-      - to:
+        to:
           - methods:
               - GET
+              - POST
   # Service Entry
   serviceEntry:
     enabled: false
@@ -90,26 +90,28 @@ fastapi:
       labels:
         app: fastapi
     configPatches:
-      - applyTo: "HTTP_FILTER"
-        match:
-          context: "SIDECAR_INBOUND"
-          listener:
-            filterChain:
-              filter:
-                name: "envoy.filters.network.http_connection_manager"
-                subFilter:
-                  name: "envoy.filters.http.router"
-        patch:
-          operation: "INSERT_BEFORE"
-          value:
-            name: "envoy.lua"
-            typed_config: |
-              "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
-              inlineCode: |
-                function envoy_on_request(request_handle)
-                  request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
-                end
-                function envoy_on_response(response_handle)
-                  response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
-                  response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
-                end
+    - applyTo: "HTTP_FILTER"
+      match:
+        context: "SIDECAR_INBOUND"
+        listener:
+          filterChain:
+            filter:
+              name: "envoy.filters.network.http_connection_manager"
+              subFilter:
+                name: "envoy.filters.http.router"
+      patch:
+        operation: "INSERT_BEFORE"
+        value:
+          name: "envoy.lua"
+          typed_config: |
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            inlineCode: |
+              function envoy_on_request(request_handle)
+                request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
+                request_handle:headers():add("x-envoy-decorator-operation", request_handle:headers():get("x-envoy-decorator-operation"))
+              end
+              function envoy_on_response(response_handle)
+                response_handle:headers():add("x-request-id", response_handle:headers():get("x-request-id"))
+                response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
+                response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
+              end
