@@ -108,8 +108,10 @@ express:
             inlineCode: |
               function envoy_on_request(request_handle)
                 request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
+                request_handle:headers():add("x-envoy-decorator-operation", request_handle:headers():get("x-envoy-decorator-operation"))
               end
               function envoy_on_response(response_handle)
+                response_handle:headers():add("x-request-id", response_handle:headers():get("x-request-id"))
                 response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
                 response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
               end

@@ -15,6 +15,15 @@ spec:
   - match:
     - uri:
         prefix: /
+    headers:
+      request:
+        add:
+          x-request-id: request.headers['x-request-id']
+          x-envoy-decorator-operation: request.headers['x-envoy-decorator-operation']
+      response:
+        add:
+          x-request-id: request.headers['x-request-id']
+          x-envoy-decorator-operation: request.headers['x-envoy-decorator-operation']
     route:
     - destination:
         host: {{ .Values.virtualService.destination.host }}
@@ -23,4 +32,5 @@ spec:
     retries:
       attempts: 3
       perTryTimeout: 2s
+    timeout: 10s
 {{- end }}
