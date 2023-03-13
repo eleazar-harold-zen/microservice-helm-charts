@@ -2,8 +2,8 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Values.hpa.name }}-hpa
-  namespace: {{ .Values.hpa.namespace }}
+  name: {{ .Values.global.chartName }}-hpa
+  namespace: {{ .Values.global.namespace }}
 spec:
   maxReplicas: 4
   minReplicas: 2

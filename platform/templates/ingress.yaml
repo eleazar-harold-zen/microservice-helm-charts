@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.ingress.name }}-ingress
-  namespace: {{ .Values.ingress.namespace }}
+  name: {{ .Values.global.chartName }}-ingress
+  namespace: {{ .Values.global.namespace }}
   labels:
-    app: {{ .Values.ingress.name }}
+    app: {{ .Values.global.chartName }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:

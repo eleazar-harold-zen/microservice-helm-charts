@@ -3,18 +3,19 @@
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
-  name: {{ .Values.peerAuthentication.name }}-pa
+  name: {{ .Values.global.chartName }}-peer-authentication
   namespace: {{ .Values.peerAuthentication.namespace }}
 spec:
     selector:
-        matchLabels:
+      matchLabels:
         {{- if .Values.peerAuthentication.app }}
-          app: {{ .Values.peerAuthentication.app  }}
+        app: {{ .Values.peerAuthentication.app  }}
         {{- end }}
         {{- if .Values.peerAuthentication.workload }}
-          workload: {{ .Values.peerAuthentication.workload }}
+        workload: {{ .Values.peerAuthentication.workload }}
         {{- end }}
     mtls:
-        # https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS-Mode
-        mode: {{ default "PERMISSIVE" .Values.peerAuthentication.mode }} # STRICT, PERMISSIVE, DISABLE
+      # https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication-MutualTLS-Mode
+      # options: STRICT, PERMISSIVE, DISABLE
+      mode: {{ .Values.peerAuthentication.mtls.mode | default "PERMISSIVE" }}
 {{- end }}

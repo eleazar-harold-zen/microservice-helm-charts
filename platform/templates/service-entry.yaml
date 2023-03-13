@@ -3,8 +3,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
-  name: {{ .Values.serviceEntry.name }}-se
-  namespace: {{ .Values.serviceEntry.namespace }}
+  name: {{ .Values.global.chartName }}-service-entry
+  namespace: {{ .Values.global.namespace }}
 spec:
     hosts:
     - {{ .Values.serviceEntry.host }}

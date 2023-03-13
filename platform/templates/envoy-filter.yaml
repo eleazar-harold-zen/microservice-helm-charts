@@ -3,8 +3,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: {{ .Values.envoyFilter.name }}-ef
-  namespace: {{ .Values.envoyFilter.namespace }}
+  name: {{ .Values.global.chartName }}-envoy-filter
+  namespace: {{ .Values.global.namespace }}
 spec:
 {{- if .Values.envoyFilter.workloadSelector }}
   workloadSelector:

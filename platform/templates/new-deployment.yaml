@@ -2,8 +2,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.newDeployment.name }}
-  namespace: {{ .Values.newDeployment.namespace }}
+  name: {{ .Values.global.chartName }}-deployment
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: {{ .Values.newDeployment.replicas }}
   selector:

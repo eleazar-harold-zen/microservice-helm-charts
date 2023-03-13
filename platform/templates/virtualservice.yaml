@@ -2,8 +2,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Values.virtualService.name }}-vs
-  namespace: {{ .Values.virtualService.namespace }}
+  name: {{ .Values.global.chartName }}-virtual-service
+  namespace: {{ .Values.global.namespace }}
 spec:
   hosts:
   - "*"
@@ -19,14 +19,14 @@ spec:
       request:
         add:
           x-request-id: request.headers['x-request-id']
-          x-envoy-decorator-operation: request.headers['x-envoy-decorator-operation']
+          x-call-service: request.headers['x-call-service']
       response:
         add:
           x-request-id: request.headers['x-request-id']
-          x-envoy-decorator-operation: request.headers['x-envoy-decorator-operation']
+          x-call-service: request.headers['x-call-service']
     route:
     - destination:
-        host: {{ .Values.virtualService.destination.host }}
+        host: {{ .Values.global.chartName }}-service
         port:
           number: {{ .Values.virtualService.destination.port }}
     retries:

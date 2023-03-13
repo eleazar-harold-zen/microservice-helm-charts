@@ -3,8 +3,8 @@
 apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
 metadata:
-  name: {{ .Values.requestAuthentication.name }}
-  namespace: {{ .Values.requestAuthentication.namespace }}
+  name: {{ .Values.global.chartName }}-request-authentication
+  namespace: {{ .Values.global.namespace }}
 spec:
     selector:
         matchLabels:

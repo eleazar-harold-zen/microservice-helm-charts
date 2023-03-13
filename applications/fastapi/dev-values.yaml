@@ -1,5 +1,6 @@
 global:
   chartName: fastapi
+  namespace: python
 fastapi:
   # Deployment object
   deployment:
@@ -7,8 +8,6 @@ fastapi:
   # Updated (New) Deployment resource
   newDeployment:
     enabled: true
-    name: fastapi
-    namespace: python
     replicas: 1
     appName: fastapi
     role: api
@@ -22,13 +21,9 @@ fastapi:
   # Service Account object
   serviceAccount:
     enabled: true
-    name: fastapi
-    namespace: python
   # Stable Service object
   service:
     enabled: true
-    name: fastapi
-    namespace: python
     appName: fastapi
     type: ClusterIP
     servicePort: 8000
@@ -49,16 +44,11 @@ fastapi:
   # Virtual Service
   virtualService:
     enabled: true
-    name: fastapi
-    namespace: python
     destination:
-      host: fastapi-service
       port: 8000
   # Peer Authentication
   peerAuthentication:
     enabled: true
-    name: fastapi
-    namespace: python
     app: fastapi
     mtls:
       mode: STRICT
@@ -66,26 +56,25 @@ fastapi:
   authorizationPolicy:
   # get authorization policy attributes from platform/istio/authorization-policy.yaml
     enabled: true
-    name: fastapi-authorization-policy
-    namespace: python
     app: fastapi
     action: ALLOW
     rules:
       - from:
-          - namespaces:
-              - express
+        - namespaces:
+          - express
         to:
-          - methods:
-              - GET
-              - POST
+        - methods:
+          - GET
+          - POST
+  # Request Authentication
+  requestAuthentication:
+    enabled: false
   # Service Entry
   serviceEntry:
     enabled: false
   # Envoy Filter
   envoyFilter:
     enabled: true
-    name: fastapi
-    namespace: python
     workloadSelector:
       labels:
         app: fastapi
@@ -107,11 +96,13 @@ fastapi:
             "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
             inlineCode: |
               function envoy_on_request(request_handle)
-                request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
-                request_handle:headers():add("x-envoy-decorator-operation", request_handle:headers():get("x-envoy-decorator-operation"))
-              end
-              function envoy_on_response(response_handle)
-                response_handle:headers():add("x-request-id", response_handle:headers():get("x-request-id"))
-                response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
-                response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
+                local headers = request_handle:headers()
+                local service = headers:get(":authority")
+                local namespace = headers:get("x-istio-namespace")
+                if namespace == "express" and service == "nodejs-service" then
+                  headers:add("x-call-service", service .. "." .. namespace .. ".svc.cluster.local")
+                  request_handle:logInfo("nodejs-service called fastapi-service successfully")
+                else
+                  request_handle:logWarn("Service and/or Namespace are incorrect")
+                end
               end

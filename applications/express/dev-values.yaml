@@ -1,11 +1,10 @@
 global:
   chartName: express
+  namespace: express
 express:
   # Deployment object
   deployment:
     enabled: true
-    name: express
-    namespace: express
     replicas: 1
     appName: express
     role: api
@@ -22,8 +21,6 @@ express:
   # Service object
   service:
     enabled: true
-    name: express-service
-    namespace: express
     appName: express
     type: LoadBalancer
     servicePort: 3000
@@ -31,12 +28,9 @@ express:
   # Service Account object
   serviceAccount:
     enabled: true
-    name: express-service-account
-    namespace: express
   # Namespace object
   namespace:
     enabled: true
-    name: express
   # Ingress object
   ingress:
     enabled: false
@@ -49,43 +43,36 @@ express:
   # Virtual Service
   virtualService:
     enabled: true
-    name: express-virtual-service
-    namespace: express
     destination:
-      host: express-service
       port: 3000
   # Peer Authentication
   peerAuthentication:
     enabled: true
-    name: express-peer-authentication
     app: express
-    namespace: express
     mtls:
       mode: STRICT
   # Authorization Policy
   authorizationPolicy:
-    enabled: false
-    name: express
-    namespace: express
+    enabled: true
     app: express
+    action: ALLOW
     rules:
       - from:
-          - source:
-              namespaces:
-                - python
+        - namespaces:
+          - python
         to:
-          - operation:
-              methods:
-                - GET
-                - POST
+        - methods:
+          - GET
+          - POST
+  # Request Authentication
+  requestAuthentication:
+    enabled: false
   # Service Entry
   serviceEntry:
     enabled: false
   # Envoy Filter
   envoyFilter:
     enabled: true
-    name: express
-    namespace: express
     workloadSelector:
       labels:
         app: express
@@ -107,11 +94,13 @@ express:
             "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
             inlineCode: |
               function envoy_on_request(request_handle)
-                request_handle:headers():add("x-request-id", request_handle:headers():get("x-request-id"))
-                request_handle:headers():add("x-envoy-decorator-operation", request_handle:headers():get("x-envoy-decorator-operation"))
-              end
-              function envoy_on_response(response_handle)
-                response_handle:headers():add("x-request-id", response_handle:headers():get("x-request-id"))
-                response_handle:headers():add("x-envoy-attempt-count", response_handle:headers():get("x-envoy-attempt-count"))
-                response_handle:headers():add("x-envoy-decorator-operation", response_handle:headers():get("x-envoy-decorator-operation"))
+                local headers = request_handle:headers()
+                local service = headers:get(":authority")
+                local namespace = headers:get("x-istio-namespace")
+                if namespace == "python" and service == "fastapi-service" then
+                  headers:add("x-call-service", service .. "." .. namespace .. ".svc.cluster.local")
+                  request_handle:logInfo("fastapi-service called nodejs-service successfully")
+                else
+                  request_handle:logWarn("Service and/or Namespace are incorrect")
+                end
               end

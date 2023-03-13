@@ -3,20 +3,20 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ .Values.authorizationPolicy.name }}-ap
-  namespace: {{ .Values.authorizationPolicy.namespace }}
+  name: {{ .Values.global.chartName }}-authorization-policy
+  namespace: {{ .Values.global.namespace }}
   labels:
     app: {{ .Values.authorizationPolicy.app }}
 spec:
     selector:
-        matchLabels:
+      matchLabels:
         app: {{ .Values.authorizationPolicy.app }}
     action: {{ .Values.authorizationPolicy.action }}
     rules:
     {{- range .Values.authorizationPolicy.rules }}
     {{- if .from}}
     - from:
-        {{- range .from }}
+      {{- range .from }}
         - source:
             {{- if .principals }}
             principals:
@@ -78,7 +78,7 @@ spec:
             - {{ . }}
             {{- end }}
             {{- end }}
-        {{- end }}
+      {{- end }}
     {{- end }}
     {{- if .to}}
       to:
