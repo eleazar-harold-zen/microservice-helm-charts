@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.newDeployment.containerName }}
-        image: "{{ .Values.newDeployment.imageRepository }}@{{ .Values.newDeployment.imageTag }}"
+        image: "{{ .Values.newDeployment.imageRepository }}:{{ .Values.newDeployment.imageTag }}"
         resources:
           limits:
             cpu: 200m
