@@ -10,7 +10,7 @@ express:
     role: api
     containerName: nodejs-app
     imageRepository: eleazarharold/express-node
-    imageTag: "v5"
+    imageTag: "v9"
     port: 3000
   # Updated (New) Deployment resource
   newDeployment:

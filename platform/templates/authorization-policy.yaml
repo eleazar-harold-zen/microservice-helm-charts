@@ -135,24 +135,24 @@ spec:
         {{- end }}
     {{- end }}
     {{- if .when }}
-        {{- range .when }}
-        - when:
-            {{- range .key }}
-            key: {{ . }}
-            {{- end }}
-            {{- if .values }}
-            values:
-            {{- range .values }}
-            - {{ . }}
-            {{- end }}
-            {{- end }}
-            {{- if .notValues }}
-            notValues:
-            {{- range .notValues }}
-            - {{ . }}
-            {{- end }}
-            {{- end }}
-        {{- end }}
+      {{- range .when }}
+      - when:
+          {{- range .key }}
+          key: {{ . }}
+          {{- end }}
+          {{- if .values }}
+          values:
+          {{- range .values }}
+          - {{ . }}
+          {{- end }}
+          {{- end }}
+          {{- if .notValues }}
+          notValues:
+          {{- range .notValues }}
+          - {{ . }}
+          {{- end }}
+          {{- end }}
+      {{- end }}
     {{- end }}
     {{- end }}
 {{- end }}
