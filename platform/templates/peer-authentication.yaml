@@ -4,7 +4,7 @@ apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: {{ .Values.global.chartName }}-peer-authentication
-  namespace: {{ .Values.peerAuthentication.namespace }}
+  namespace: {{ .Values.global.namespace }}
 spec:
     selector:
       matchLabels:
